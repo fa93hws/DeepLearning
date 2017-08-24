@@ -1,6 +1,17 @@
+def unit_factory(typ):
+    return{
+        "linear": Linear(),
+        "RELU": RELU(),
+    }[typ];
+
 class RELU:
-    def __init__(self,val):
+    def __init__(self):
         self.type="RELU";
-        self.val = val;
-    def get(self):
-        return max(0,self.val);
+    def get(self,val):
+        return max(0,val);
+
+class Linear:
+    def __init__(self):
+        self.type="Linear";
+    def get(self,val):
+        return val;
