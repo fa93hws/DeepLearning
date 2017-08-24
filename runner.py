@@ -2,8 +2,7 @@ import math;
 
 from networks.MLP import MLPRegressor;
 from test.geometry import Parabola;
-from layers.fully_connected import FullyConnect;
-from layers.base_layers import Input, Output;
+from layers.base_layers import Input, Output, FullyConnect;
 
 def l2norm(x,y):
     dist = 0.0;
