@@ -9,7 +9,7 @@ class Parabola:
         self.coe1 = (random.random()-0.5) * 10;
         self.coe2 = (random.random()-0.5) * 10;
         self.x = [];
-        for i in range (0,10):
+        for i in range (0,1000):
             self.x.append([ (random.random()-0.5)  * 100 ]);
         self.y = self._fun(self.x);
     def getTrainData(self):
