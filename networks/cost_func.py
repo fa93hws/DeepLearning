@@ -22,7 +22,7 @@ class CostFun(metaclass=ABCMeta):
         # accurate: a list of np row array
         pass;
     @abstractmethod
-    def get_deri(self,layers,x,predict,accurate):
+    def get_gradient(self,layers,x,predict,accurate):
         # input is numpy array
         pass;
     def __init__(self,options):
@@ -35,10 +35,10 @@ class CrossEntropy(CostFun):
         super(CrossEntropy, self).dump();
     def __init__(self,options):
         super(CrossEntropy, self).__init__(options);
-    # def getValue(self,x,y):
-    #     pass;
-    # def getDeri(self,x,y):
-    #     pass;
+    def get_value(self,predict,accurate):
+        pass;
+    def get_gradient(self,layers,x,predict,accurate):
+        pass;
 
 class L2Dist(CostFun):
     def dump(self):
@@ -54,15 +54,51 @@ class L2Dist(CostFun):
             len += 1;
             cost += np.linalg.norm(p-a);
         return cost/len/2;
-    def _get_deri_w():
-        pass;
-    def _get_deri_b():
-        pass;
-    def get_deri(self,layers,x,predict,accurate):
-        # store deri for every layer in chain
-        # first value in chain -> deri in last layer
-        chain = [];
-        n_layers = len(layers);
-        for i in range(n_layers-1,0):
-            print(i)
+    def _get_layer_sample_gradient(self,w,b,x,m,n,accurate,leading_term):
+        ## can be optimized via using multi-threading
+        # m-th column
+        dw = np.zeros((n,m));
+        for i in range(0,m):
+            dw[:,i] = np.multiply(leading_term,x.T);
+        db = leading_term;
         return dw,db;
+    def _get_layer_gradient(self,layer,x,accurate):
+        #### Input
+        # W*x_i + b => y_i
+        # accurate, expected y, list of m*1 np array
+        # x: list of n*1 np array
+        #### Output
+        # dw: change in weight,np matrix, n*m
+        # db: change in bias, n*1 np array
+        n = x[0].shape[0];
+        m = accurate[0].shape[0];
+        num_sample = len(x);
+        dw = np.zeros((n,m));
+        db = np.zeros((n,1));
+        ## can be optimized via using multi-threading
+        for a,y in zip(x,accurate):
+            leading_term = y - (layer.weight * a + layer.bias);
+            dw_iter, db_iter = self._get_layer_sample_gradient(layer.weight,layer.bias,a,m,n,y,leading_term);
+            dw += dw_iter;
+            db += db_iter;
+        dw /= num_sample;
+        db /= num_sample;
+        return dw,db;
+    def get_gradient(self,layers,x,accurate,all_results):
+        n_layers = len(layers);
+        # all results in i-th layer with all sample
+        # a list of a list of n*1 np array
+        layer_results=n_layers*[None];
+        for i in range(0,n_layers):
+            layer_results[i] = [results[i] for results in all_results];        
+        # store gradient for every layer in chain
+        # first value in chain -> gradient in last layer
+        chain = {"dw":n_layers*[None],"db":n_layers*[None]};
+        # output layer
+        y = accurate;
+        dw,db = self._get_layer_gradient( layers[n_layers-1], layer_results[n_layers-1], y);
+        chain["dw"][n_layers-1] = dw;
+        chain["db"][n_layers-1] = db;
+        # for i in range(n_layers-1,0):
+        #     print(i)
+        return chain;

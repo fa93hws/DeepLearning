@@ -33,7 +33,7 @@ class SGD(Solver):
         self.alpha = options.get("alpha",0.001);
         self.batch = options.get("batch",50);
         self.eps = options.get("eps",1e-6);
-        self.max_iter = options.get("max_iter",1e6);
+        self.max_iter = options.get("max_iter",10**6);
     ## optimize
     def optimize(self,layers,x,y):
         optimizer = Optimizer(layers,x,y,self);
