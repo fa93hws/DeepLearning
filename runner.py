@@ -15,7 +15,11 @@ def geo_test():
     layers.append( Input(1) );
     layers.append( FullyConnect(1) );
     layers.append( FullyConnect(1,"linear") );
-    regressor = MLPRegressor(layers,cost_func="l2norm");
+    cost_func_options={
+        "typ": "l2norm",
+        "lambda": 0
+    }
+    regressor = MLPRegressor(layers,cost_func_options=cost_func_options);
     # regressor.dump();
     ## train network
     test = Parabola();

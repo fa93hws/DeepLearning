@@ -22,7 +22,7 @@ class Optimizer:
             all_results.append( self._cal_layer_result(layers,a) );
         return all_results;
     def _update_layers(self,layers,y,all_results,solver):
-        
+        pass;
     def _optimize_once(self,layers,x,y,solver):
         # input,x: a list of np 2d array,based on row (if input is a list)
         # input,y: a list of np row array (if input is a list)

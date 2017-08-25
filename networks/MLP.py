@@ -8,7 +8,7 @@ class MLPRegressor:
     def dump(self):
         print("It is a MLP regressor");
         print("It has {0} layers".format(self.num_layers));
-        print("Cost function is {0}".format(self.cost_func.typ));
+        # print("Cost function is {0}".format(self.cost_func.typ));
         for layer in self.layers:
             layer.dump();
         self.solver.dump();
@@ -27,13 +27,16 @@ class MLPRegressor:
             "max_iter" :self.max_iter
         };
         return solver_factory(typ,self.cost_func,options);
-    def __init__(self,layers,cost_func="cross_entropy",alpha=0.001
+    def __init__(self,layers,cost_func_options={
+                    "typ":"cross entropy",
+                    "lambda":0
+                },alpha=0.001
                 ,solver="SGD",batch_size=50, eps = 1e-6, max_iter = 1e6):
         self.layers = layers;
         self.num_layers = len(layers);
         self.batch_size = batch_size;
         self._init_layers();
-        self.cost_func = cost_fun_factory(cost_func);
+        self.cost_func = cost_fun_factory(cost_func_options);
         self.alpha = alpha;
         self.eps = eps;
         self.max_iter = max_iter;
