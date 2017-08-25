@@ -5,37 +5,44 @@ from abc import ABCMeta,abstractmethod;
 
 class Layer(metaclass=ABCMeta):
     @abstractmethod
-    def _init_units(self,*args,**kwargs):
-        pass;
-    @abstractmethod
-    def _init_para(self,*args,**kwargs):
+    def _init_para(self):
         pass;
     @abstractmethod
     def init_weight(self,*args,**kwargs):
         pass;
     @abstractmethod
     def dump(self):
-        pass;
+        print("");
+        print("layer {0} is a/an {1} layer".format(self.id, self.typ));
+        print("It has {0} {1} units".format(self.size, self.activation));
+    def __init__(self,size,typ,activation):
+        self.size = size;
+        # will be assigned in network
+        self.id = 0;
+        # name of the layers
+        self.typ = typ;
+        self.activation = activation;
+        self._init_units();
+        self._init_para();
+    def _init_units(self):
+        self.units = [];
+        for i in range (1,self.size):
+            self.units.append(unit_factory(self.activation));
 
 class FullyConnect(Layer):
     ## print information of the layer
     def dump(self):
-        pass;
-    def _init_units(self,size,typ):
-        self.units = [];
-        for i in range (1,size):
-            self.units.append(unit_factory(typ));
-    def _init_bias(self,size,typ):
+        super(FullyConnect, self).dump();
+        print("weight is {0}".format(self.weight));
+        print("bias is {0}".format(self.bias));
+    ## main methods
+    def _init_bias(self):
         # init bias as size*1 vector with initial value of 0.1
-        self.bias = np.ones((size,1)) * 0.1;
-    def _init_para(self,size,typ,activation):
-        self.size = size;
+        self.bias = np.ones((self.size,1)) * 0.1;
+    def _init_para(self):
         # will be assign in network initialization
         self.previous_size = 0;
-        self.typ = typ;
-        self.activation = activation;
-        self._init_units(size,self.activation);
-        self._init_bias(size,self.activation);
+        self._init_bias();
     def init_weight(self,previous_size):
         if previous_size is 0:
             return;
@@ -44,25 +51,20 @@ class FullyConnect(Layer):
         # matrix (size * previous_size)
         self.weight = np.asmatrix(weight);
     def __init__(self,size,activation="RELU"):
-        self._init_para(size,"fully_connected",activation);
+        self.activation = activation;
+        super(FullyConnect,self).__init__(size,"fully_connected",activation);
+        # self._init_para(size,"fully_connected",activation);
 
 class Input(Layer):
     ## print the information of the layer
     def dump(self):
-        pass;
-    def _init_units(self,size,typ):
-        self.units = [];
-        for i in range (1,size):
-            self.units.append(unit_factory(typ))
+        super(Input, self).dump();
+    ## main methods
     def init_weight(self,*args,**kwargs):
         pass;
-    def _init_para(self,size):
-        self.size = size;
-        self.previous_size = 0;
-        self.typ = "fully_connected";
-        self.activation = "linear";
-        self._init_units(size,self.activation);
+    def _init_para(self):
+        pass;
     def __init__(self,size):
-        self._init_para(size);
+        super(Input,self).__init__(size,"input","linear");
 
     
