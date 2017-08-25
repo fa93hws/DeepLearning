@@ -1,9 +1,6 @@
 import math;
 from abc import ABCMeta,abstractmethod;
 
-
-from utils.num import to_nparrays;
-
 def cost_fun_factory(typ):
     if typ is "cross_entropy":
         return CrossEntropy();
@@ -11,23 +8,31 @@ def cost_fun_factory(typ):
         return L2Dist();
 
 class CostFun(metaclass=ABCMeta):
-    @abstractmethod
-    def getValue(self,x,w,b,y):
-        pass;
-    @abstractmethod
-    def getDeri(self,x,w,b,y):
-        pass;
+    pass;
+    # @abstractmethod
+    # def get_value(self,x,w,b,y):
+    # input is numpy array
+    #     pass;
+    # @abstractmethod
+    # def get_deri(self,x,w,b,y):
+    #     pass;
 
 
 class CrossEntropy(CostFun):
-    pass;
+    def __init__(self):
+        self.typ = "cross entropy";
     # def getValue(self,x,y):
     #     pass;
     # def getDeri(self,x,y):
     #     pass;
 
 class L2Dist(CostFun):
-    def getValue(self,x,w,b,y):
-        pass;
-    def getDeri(self,x,w,b,y):
+    def __init__(self):
+        self.typ = "l2norm";
+    def get_value(self,predict,accurate):
+        dist = 0.0;
+        for p,a in zip(predict,accurate):
+            dist += (p-a) ** 2;
+        return math.sqrt(dist);
+    def get_deri(self,x,w,b,y):
         pass;

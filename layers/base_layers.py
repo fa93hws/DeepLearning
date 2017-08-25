@@ -15,19 +15,21 @@ class Layer(metaclass=ABCMeta):
         print("");
         print("layer {0} is a/an {1} layer".format(self.id, self.typ));
         print("It has {0} {1} units".format(self.size, self.activation));
+    @abstractmethod
+    def eval(self,input):
+        pass;
     def __init__(self,size,typ,activation):
+        assert size > 0;
         self.size = size;
         # will be assigned in network
         self.id = 0;
         # name of the layers
         self.typ = typ;
         self.activation = activation;
-        self._init_units();
+        self._init_unit();
         self._init_para();
-    def _init_units(self):
-        self.units = [];
-        for i in range (1,self.size):
-            self.units.append(unit_factory(self.activation));
+    def _init_unit(self):
+        self.unit = unit_factory(self.activation);
 
 class FullyConnect(Layer):
     ## print information of the layer
@@ -51,9 +53,17 @@ class FullyConnect(Layer):
         # matrix (size * previous_size)
         self.weight = np.asmatrix(weight);
     def __init__(self,size,activation="RELU"):
-        self.activation = activation;
         super(FullyConnect,self).__init__(size,"fully_connected",activation);
-        # self._init_para(size,"fully_connected",activation);
+    def eval(self,input):
+        # input : np array (n*1)
+        # output: np array (m*1)
+        if (input.shape[0] is not self.size):
+            raise Exception("size mismatch"
+                            ,"input in the fully connected layer({0}) should be equal to the number of neurals({1})"
+                            .format(input.shape[0], self.size));
+        raw = self.weight * input + self.bias;
+        out = self.unit.eval(raw);
+        return out;
 
 class Input(Layer):
     ## print the information of the layer
@@ -64,7 +74,7 @@ class Input(Layer):
         pass;
     def _init_para(self):
         pass;
+    def eval(self,input):
+        pass;
     def __init__(self,size):
         super(Input,self).__init__(size,"input","linear");
-
-    

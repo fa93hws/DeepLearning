@@ -16,11 +16,11 @@ def geo_test():
     layers.append( FullyConnect(1) );
     layers.append( FullyConnect(1,"linear") );
     regressor = MLPRegressor(layers,cost_func="l2norm");
-    regressor.dump();
+    # regressor.dump();
     ## train network
-    # test = Parabola();
-    # train_data = test.getTrainData();
-    # regressor.train(train_data[0],train_data[1]);
+    test = Parabola();
+    train_data = test.getTrainData();
+    regressor.train(train_data[0],train_data[1]);
     ## verify result
     # x = [-5,-9,-10,5,0.5,7,9];
     # y_predict = regressor.predict(x);

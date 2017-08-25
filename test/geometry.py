@@ -1,15 +1,20 @@
+import random;
+
 class Parabola:
     # x,y
     def _fun(self,x):
-        return 9*x**2 + x*4 - 12;
+        return [[self.coe2 * (a[0]**2) + self.coe1 * a[0] - self.coe0] for a in x];
     def __init__(self):
-        self._init();
-    def _init(self):
-        self.x = [1,10,100,2,20,9,45,-2,-10,2,945,2,0.2,1.5];
-        self.y = [self._fun(a) for a in self.x];
+        self.coe0 = (random.random()-0.5) * 10;
+        self.coe1 = (random.random()-0.5) * 10;
+        self.coe2 = (random.random()-0.5) * 10;
+        self.x = [];
+        for i in range (0,10):
+            self.x.append([ (random.random()-0.5)  * 100 ]);
+        self.y = self._fun(self.x);
     def getTrainData(self):
         return [self.x,self.y];
     def getY(self,x):
-        return [self._fun(a) for a in x];
+        return self._fun(x);
     def getPara(self):
-        return [9,1,-12];
+        return [self.coe2, self.coe1, self.coe0];

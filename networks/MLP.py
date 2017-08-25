@@ -1,3 +1,5 @@
+import numpy as np;
+
 from networks.cost_func import cost_fun_factory;
 
 class MLPRegressor:
@@ -7,7 +9,7 @@ class MLPRegressor:
         print("It has {0} layers".format(self.num_layers));
         print("Solver type is {0}".format(self.solver));
         print("Learning rate is {0}".format(self.alpha));
-        print("Cost function is {0}".format(self.cost_func));
+        print("Cost function is {0}".format(self.cost_func.typ));
         print("batch_size is {0}".format(self.batch_size));
         for layer in self.layers:
             layer.dump();
@@ -17,6 +19,7 @@ class MLPRegressor:
         for i in range(1,self.num_layers):
             self.layers[i].init_weight( self.layers[i-1].size );
             self.layers[i].id = i;
+            assert self.layers[i].typ == "fully_connected"
     def __init__(self,layers,cost_func="cross_entropy",alpha=0.001
                 ,solver="SGD",batch_size=10):
         self.layers = layers;
@@ -26,8 +29,20 @@ class MLPRegressor:
         self.cost_func = cost_fun_factory(cost_func);
         self.solver = solver;
         self.alpha = alpha;
+    def _train(self,x,y):
+        x = np.asarray(x);
+        accurate = np.asarray(y);
+        predict = self.predict(x);
+        cost = self.cost_func.get_value(predict,accurate);
+        print ("accurate:{0}, predict:{1}, cost:{2}".format(accurate,predict,cost));
     def train(self,x,y):
-        print("to be completed");
+        for _x,_y in zip(x,y):
+            self._train(_x,_y);        
     def predict(self,x):
-        print("to be completed");
+        for layer in self.layers:
+            if layer.typ is "input":
+                continue;
+            temp_out = layer.eval(x);
+        predict = temp_out;
+        return predict;
     
