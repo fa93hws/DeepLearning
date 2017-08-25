@@ -3,9 +3,10 @@ from abc import ABCMeta, abstractmethod;
 
 from networks.optimizer import Optimizer;
 
-def solver_factory(typ,cost_func,options):
-    if typ is "SGD":
-        return SGD(cost_func,options);
+def solver_factory(options, cost_func):
+    # default type is SGD
+    if options.get("typ","SGD") is "SGD":
+        return SGD(options, cost_func);
     else:
         raise Exception("Unknown solver","{0} is unknown".format(typ));
 
@@ -18,21 +19,21 @@ class Solver(metaclass = ABCMeta):
     def optimize(self,layers,x,y):
         # x,y are numpy tensor
         pass;
-    def __init__(self,cost_func,typ):
+    def __init__(self,options,cost_func):
         self.cost_func = cost_func;
-        self.typ = typ;
+        self.typ = options.get("typ","SGD");
 
 class SGD(Solver):
     def dump(self):
         super(SGD, self).dump();
         print("Learning rate is {0}".format(self.alpha));
         print("Batch size is {0}".format(self.batch));
-    def __init__(self,cost_func,options):
-        super(SGD, self).__init__(cost_func,"SGD");
-        self.alpha = options["alpha"];
-        self.batch = options["batch"];
-        self.eps = options["eps"];
-        self.max_iter = options["max_iter"];
+    def __init__(self,options,cost_func):
+        super(SGD, self).__init__(options,cost_func);
+        self.alpha = options.get("alpha",0.001);
+        self.batch = options.get("batch",50);
+        self.eps = options.get("eps",1e-6);
+        self.max_iter = options.get("max_iter",1e6);
     ## optimize
     def optimize(self,layers,x,y):
         optimizer = Optimizer(layers,x,y,self);

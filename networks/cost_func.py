@@ -3,7 +3,8 @@ from abc import ABCMeta,abstractmethod;
 import numpy as np;
 
 def cost_fun_factory(options):
-    if options["typ"] is "cross_entropy":
+    # default value of typ is cross_entropy
+    if options.get("typ","cross_entropy") is "cross_entropy":
         return CrossEntropy(options);
     elif options["typ"] is "l2norm":
         return L2Dist(options);
@@ -25,8 +26,8 @@ class CostFun(metaclass=ABCMeta):
         # input is numpy array
         pass;
     def __init__(self,options):
-        self.decay = options["lambda"];
-        self.typ = options["typ"]
+        self.decay = options.get("lambda",0);
+        self.typ = options.get("typ","cross_entropy");
 
 
 class CrossEntropy(CostFun):

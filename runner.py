@@ -16,8 +16,7 @@ def geo_test():
     layers.append( FullyConnect(1) );
     layers.append( FullyConnect(1,"linear") );
     cost_func_options={
-        "typ": "l2norm",
-        "lambda": 0
+        "typ": "l2norm"
     }
     regressor = MLPRegressor(layers,cost_func_options=cost_func_options);
     # regressor.dump();

@@ -19,29 +19,21 @@ class MLPRegressor:
             self.layers[i].init_weight( self.layers[i-1].size );
             self.layers[i].id = i;
             assert self.layers[i].typ == "fully_connected";
-    def _init_solver(self,typ):
-        options={
-            "alpha":self.alpha,
-            "batch": self.batch_size,
-            "eps": self.eps,
-            "max_iter" :self.max_iter
-        };
-        return solver_factory(typ,self.cost_func,options);
-    def __init__(self,layers,cost_func_options={
-                    "typ":"cross entropy",
-                    "lambda":0
-                },alpha=0.001
-                ,solver="SGD",batch_size=50, eps = 1e-6, max_iter = 1e6):
+    def __init__(self, layers, cost_func_options={}, solver_options={}):
+        #### cost function options
+        # typ: type of the cost function, default cross_entropy
+        # lambda: weight decay factor, default 0
+        #### solver options
+        # typ: type of the solver, default SGD
+        # batch: batch size (for SGD), default 50
+        # alpha: learning rate, default 0.001
+        # eps: threashold, default 1e-6
+        # max_iter: max number of iteration, default 1e6
         self.layers = layers;
         self.num_layers = len(layers);
-        self.batch_size = batch_size;
         self._init_layers();
         self.cost_func = cost_fun_factory(cost_func_options);
-        self.alpha = alpha;
-        self.eps = eps;
-        self.max_iter = max_iter;
-        # init solver at last
-        self.solver = self._init_solver(solver);
+        self.solver = solver_factory(solver_options, self.cost_func);
     def train(self,x,y):
         # input,x: a list of training input
         # input,y: a list of expected result
