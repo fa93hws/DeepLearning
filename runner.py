@@ -2,7 +2,7 @@ import math;
 
 from networks.MLP import MLPRegressor;
 from test.geometry import Parabola;
-from layers.base_layers import Input, Output, FullyConnect;
+from layers.base_layers import Input, FullyConnect;
 
 def l2norm(x,y):
     dist = 0.0;
@@ -14,12 +14,12 @@ def geo_test():
     layers = [];
     layers.append( Input(1) );
     layers.append( FullyConnect(1) );
-    layers.append( Output(1,"linear") );
-    regressor = MLPRegressor(layers);
+    layers.append( FullyConnect(1,"linear") );
+    regressor = MLPRegressor(layers,cost_func="l2norm");
     ## train network
-    test = Parabola();
-    train_data = test.getTrainData();
-    regressor.train(train_data[0],train_data[1]);
+    # test = Parabola();
+    # train_data = test.getTrainData();
+    # regressor.train(train_data[0],train_data[1]);
     ## verify result
     # x = [-5,-9,-10,5,0.5,7,9];
     # y_predict = regressor.predict(x);
