@@ -34,16 +34,21 @@ class MLPRegressor:
         self._init_layers();
         self.cost_func = cost_fun_factory(cost_func_options);
         self.solver = solver_factory(solver_options, self.cost_func);
-    def train(self,x,y):
-        # input,x: a list of training input
-        # input,y: a list of expected result
+    def train(self,li_x,li_y):
+        # input,li_x: a list of training input
+        # input,li_y: a list of expected result
         # 1st step: transform inputs to
-        # temp,x: a list of np 2d array,based on row (if input is a list)
-        # temp,y: a list of np row array (if input is a list)
-        x = [ np.asarray([a]) for a in x ];
-        y = [ np.asarray(a) for a in y ];
+        # temp,x: np matrix, n_samples * n_features
+        # temp,y: np matrix, n_samples * n_outputs
+        n_samples = len(li_x);
+        n_features = len(li_x);
+        n_outputs = 1;
+        x = np.asmatrix( np.zeros(( n_samples,n_fatures)) );
+        y = np.asmatrix( np.zeros(( n_samples, n_outputs)) );
         self.solver.optimize(self.layers,x,y);    
     def predict(self,x):
+        # input,x: a list of list of features (n_sample * n_featres)
+        # output, predict: a np matrix (n_sample * n_result)
         for layer in self.layers:
             if layer.typ is "input":
                 continue;

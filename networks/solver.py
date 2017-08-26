@@ -1,4 +1,5 @@
 import numpy as np;
+from random import randrange;
 from abc import ABCMeta, abstractmethod;
 
 from networks.optimizer import Optimizer;
@@ -35,5 +36,25 @@ class SGD(Solver):
         self.eps = options.get("eps",1e-6);
         self.max_iter = options.get("max_iter",10**6);
     ## optimize
+    def _fill_batch(self,x,y):
+        # input,x: np matrix, n_samples * n_features
+        # input,y: np matrix, n_samples * n_outputs
+        # output,batch_x: np matrix, batch_size * n_features
+        # output,batch_y: np matrix, batch_size * n_output
+        batch_x = np.zeros((self.batch,n_features));
+        batch_y = np.zeros((self.batch,n_output));
+        size = len(x);
+        # can be optimized via using multi-threading
+        for i in range (0, self.batch):
+            idx = randrange(0,size);
+            batch_x[i,:] = x[idx,:];
+            batch_y[i,:] = y[idx,:];
+        return batch_x, batch_y;
     def optimize(self,layers,x,y):
-        optimizer = Optimizer(layers,x,y,self);
+        # input,x: np matrix, n_samples * n_features
+        # input,y: np matrix, n_samples * n_outputs
+        optimizer = Optimizer(self.cost_func, self.alpha, self.eps);
+        for i in range(1, self.max_iter):
+            batch_x, batch_y = self._fill_batch(x,y);
+            finish_flag = optimizer.do_once(layers,batch_x,batch_y);
+            break;
