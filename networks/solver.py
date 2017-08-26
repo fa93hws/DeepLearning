@@ -41,8 +41,10 @@ class SGD(Solver):
         # input,y: np matrix, n_samples * n_outputs
         # output,batch_x: np matrix, batch_size * n_features
         # output,batch_y: np matrix, batch_size * n_output
+        n_features = x.shape[1];
+        n_outputs = y.shape[1];
         batch_x = np.zeros((self.batch,n_features));
-        batch_y = np.zeros((self.batch,n_output));
+        batch_y = np.zeros((self.batch,n_outputs));
         size = len(x);
         # can be optimized via using multi-threading
         for i in range (0, self.batch):

@@ -41,10 +41,13 @@ class MLPRegressor:
         # temp,x: np matrix, n_samples * n_features
         # temp,y: np matrix, n_samples * n_outputs
         n_samples = len(li_x);
-        n_features = len(li_x);
+        n_features = len(li_x[0]);
         n_outputs = 1;
-        x = np.asmatrix( np.zeros(( n_samples,n_fatures)) );
+        x = np.asmatrix( np.zeros(( n_samples,n_features)) );
         y = np.asmatrix( np.zeros(( n_samples, n_outputs)) );
+        for i in range(0,n_samples):
+            x[i,:] = np.asarray(li_x[i]);
+            y[i,:] = np.asarray(li_y[i]);
         self.solver.optimize(self.layers,x,y);    
     def predict(self,x):
         # input,x: a list of list of features (n_sample * n_featres)

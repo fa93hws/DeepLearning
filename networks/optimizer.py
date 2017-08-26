@@ -11,7 +11,7 @@ class Optimizer:
                 temp_out = x.T;
                 continue;
             temp_out = layer.eval(temp_out);
-        return temp.out;
+        return temp_out;
     def _cal_sample_result(self,layers,x):
         # input ,x: np matrix, n_samples * n_features
         # output,y: np matrix, n_samples * n_outputs
@@ -46,15 +46,15 @@ class Optimizer:
         self.alpha = alpha;
         self.eps = eps;
         # print(self.costs[-1]);
-    def do_once(self,layers,x,y):
+    def do_once(self,layers,x,accurate):
         nlayers = len(layers);
         # input,x: np matrix, n_samples * n_features
-        # input,y: np matrix, n_samples * n_outputs
+        # input,accurate: np matrix, n_samples * n_outputs
         # output, finish_flag: whether the iteration should stop
-        all_results = self._cal_sample_result(layers,x);
-        # all_predict = [results[nlayers-1] for results in all_results];
-        # local_cost = self.cost_func.get_value(all_predict,y);
-        # self.costs.append(local_cost);
+        # mid,predicts: np matrix, n_samples * n_outputs
+        predicts = self._cal_sample_result(layers,x);
+        local_cost = self.cost_func.get_value(predicts,accurate);
+        self.costs.append(local_cost);
         # # print(local_cost);
         # chain = self.cost_func.get_gradient(layers,x,y,all_results);
         # finish_flag = self._update_layers(layers,chain);

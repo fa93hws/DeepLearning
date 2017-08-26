@@ -47,14 +47,13 @@ class L2Dist(CostFun):
     def __init__(self,options):
         super(L2Dist, self).__init__(options);
     def get_value(self,predict,accurate):
-        # predict: a list of np row array
-        # accurate: a list of np row array
-        cost = 0.0;
-        len = 0;
-        for p,a in zip(predict,accurate):
-            len += 1;
-            cost += np.linalg.norm(p-a);
-        return cost/len/2;
+        # input,accurate: np matrix, n_samples * n_outputs
+        # input,predict: np matrix, n_samples * n_outputs
+        # output, scalr
+        n_samples = predict.shape[0];
+        diff = predict - accurate;
+        l2norm = np.linalg.norm(diff);
+        return l2norm **2 / n_samples / 2;
     # def _get_layer_sample_gradient(self,w,b,x,m,n,accurate,leading_term):
     #     ## can be optimized via using multi-threading
     #     # m-th column
@@ -105,6 +104,8 @@ class L2Dist(CostFun):
     #     #     print(i)
     #     return chain;
     def get_gradient(self,predict,accurate):
-
-        m = predict.shape[0];
-        return predict-accurate;
+        # input,accurate: np matrix, n_samples * n_outputs
+        # input,predict: np matrix, n_samples * n_outputs
+        # output, np matrix 1 * n_outputs
+        diff = predict - accurate;
+        return np.sum(diff, axis = 0);
