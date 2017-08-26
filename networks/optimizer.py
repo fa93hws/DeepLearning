@@ -24,21 +24,16 @@ class Optimizer:
         for i in range(1,n_samples):
             y[i,:] = self._cal_layer_result(layers,x[i,:]);
         return y;
-    # def _update_layers(self,layers,chain):
-    #     nlayers = len(layers);
-    #     finish_flag = False;
-    #     for i in range(nlayers-1,1,-1):
-    #         dw = chain["dw"][i];
-    #         db = chain["db"][i];
-    #         layers[i].weight += self.alpha * dw;
-    #         layers[i].bias   += self.alpha * db;
-    #         if not finish_flag:
-    #             norm_dw = np.linalg.norm(dw);
-    #             norm_db = np.linalg.norm(db);
-    #             # print(norm_dw);
-    #             if norm_dw < self.eps and norm_db < self.eps:
-    #                 finish_flag = True;
-    #     return finish_flag;
+    def _update_layers(self,layers,x,predict,accurate):
+        # input,x: np matrix, n_samples * n_features
+        # input,accurate: np matrix, n_samples * n_outputs
+        # input,predicts: np matrix, n_samples * n_outputs
+        # output, finish_flag: bool, whether the iteration should stop
+        finish_flag = false;
+        # gradient dJ/dy(hat) at output layer
+        gradient = self.cost_func.get_gradient(predict,accurate);
+        gradient = np.multiply(layers[-1].unit.eval_deri())
+        return finish_flag;
     def __init__(self,cost_func, alpha, eps):
         # record every cost in each iteration
         self.costs = [];
@@ -55,8 +50,6 @@ class Optimizer:
         predicts = self._cal_sample_result(layers,x);
         local_cost = self.cost_func.get_value(predicts,accurate);
         self.costs.append(local_cost);
-        # # print(local_cost);
-        # chain = self.cost_func.get_gradient(layers,x,y,all_results);
-        # finish_flag = self._update_layers(layers,chain);
+        finish_flag = self._update_layers(layers,x,predict,accurate);
         return finish_flag
         
