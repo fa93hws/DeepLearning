@@ -13,14 +13,14 @@ def geo_test():
     ## setup networks, 3 layers MLP
     layers = [];
     layers.append( Input(1) );
-    # layers.append( FullyConnect(1) );
+    layers.append( FullyConnect(1,"linear") );
     layers.append( FullyConnect(1,"linear") );
     cost_func_options={
         "typ": "l2norm"
     }
     solver_options={
         "batch":1,
-        "alpha":0.05,
+        "alpha":0.5,
         "max_iter":10**5,
         "eps":1e-7
     }

@@ -8,7 +8,8 @@ class Optimizer:
         layers_result = [];
         temp_out = x.T;
         for layer in layers:
-            layers_result.append( layer.eval(temp_out) );            
+            temp_out = layer.eval(temp_out);
+            layers_result.append( temp_out );
         return layers_result;
     def _update_layers(self,layers,dw,db):
         # input,dw db: list of changes in W and b

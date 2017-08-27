@@ -59,8 +59,5 @@ class SGD(Solver):
         for i in range(1, self.max_iter):
             batch_x, batch_y = self._fill_batch(x,y);
             stop_flag,cost = optimizer.do_batch(layers,batch_x,batch_y);
-            # print(cost);
             if stop_flag:
                 break;
-            # if i%100 is 0:
-            #     print(123);

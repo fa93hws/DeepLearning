@@ -62,5 +62,4 @@ class MLPRegressor:
             for layer in self.layers:
                 temp_out = layer.eval(temp_out);
             predict[i,:] = temp_out;
-
         return predict;
