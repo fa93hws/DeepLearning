@@ -31,10 +31,10 @@ class SGD(Solver):
         print("Batch size is {0}".format(self.batch));
     def __init__(self,options,cost_func):
         super(SGD, self).__init__(options,cost_func);
-        self.alpha = options.get("alpha",0.001);
+        self.alpha = options.get("alpha",0.01);
         self.batch = options.get("batch",50);
         self.eps = options.get("eps",1e-6);
-        self.max_iter = options.get("max_iter",10**6);
+        self.max_iter = options.get("max_iter",10**3);
     ## optimize
     def _fill_batch(self,x,y):
         # input,x: np matrix, n_samples * n_features
@@ -58,5 +58,9 @@ class SGD(Solver):
         optimizer = Optimizer(self.cost_func, self.alpha, self.eps);
         for i in range(1, self.max_iter):
             batch_x, batch_y = self._fill_batch(x,y);
-            finish_flag = optimizer.do_once(layers,batch_x,batch_y);
-            break;
+            stop_flag,cost = optimizer.do_batch(layers,batch_x,batch_y);
+            # print(cost);
+            if stop_flag:
+                break;
+            if i%100 is 0:
+                print(123);

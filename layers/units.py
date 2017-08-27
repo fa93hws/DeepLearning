@@ -27,12 +27,15 @@ class RELU(Unit):
         return np.maximum(array,0);
     def eval_deri(self,array):
         deri = np.ones(array.shape);
-        deri[array<0] = 0;
+        deri[array<=0] = 0;
+        return deri;
 
 class Linear(Unit):
     def __init__(self):
         super(Linear, self).__init__("linear");
     def eval(self,array):
+        # array:x
         return array;
     def eval_deri(self,array):
+        # input,array: y
         return np.ones(array.shape);

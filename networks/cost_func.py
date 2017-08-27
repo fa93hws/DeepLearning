@@ -47,16 +47,15 @@ class L2Dist(CostFun):
     def __init__(self,options):
         super(L2Dist, self).__init__(options);
     def get_value(self,predict,accurate):
-        # input,accurate: np matrix, n_samples * n_outputs
-        # input,predict: np matrix, n_samples * n_outputs
+        # input,accurate: np matrix, 1 * n_outputs
+        # input,predict: np matrix, 1 * n_outputs
         # output, scalr
-        n_samples = predict.shape[0];
         diff = predict - accurate;
         l2norm = np.linalg.norm(diff);
-        return l2norm **2 / n_samples / 2;
+        return l2norm **2 / 2;
     def get_gradient(self,predict,accurate):
-        # input,accurate: np matrix, n_samples * n_outputs
-        # input,predict: np matrix, n_samples * n_outputs
+        # input,accurate: np matrix, 1 * n_outputs
+        # input,predict: np matrix, 1 * n_outputs
         # output, np matrix 1 * n_outputs
         diff = predict - accurate;
-        return np.sum(diff, axis = 0);
+        return diff;
