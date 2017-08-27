@@ -31,7 +31,7 @@ class SGD(Solver):
         print("Batch size is {0}".format(self.batch));
     def __init__(self,options,cost_func):
         super(SGD, self).__init__(options,cost_func);
-        self.alpha = options.get("alpha",0.01);
+        self.alpha = options.get("alpha",0.001);
         self.batch = options.get("batch",50);
         self.eps = options.get("eps",1e-6);
         self.max_iter = options.get("max_iter",10**3);
@@ -62,5 +62,5 @@ class SGD(Solver):
             # print(cost);
             if stop_flag:
                 break;
-            if i%100 is 0:
-                print(123);
+            # if i%100 is 0:
+            #     print(123);

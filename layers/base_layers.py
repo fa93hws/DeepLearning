@@ -75,6 +75,8 @@ class Input(Layer):
     def _init_para(self):
         pass;
     def eval(self,input):
-        pass;
+        # input : np array (n*1)
+        # output: np array (m*1)
+        return input;
     def __init__(self,size):
         super(Input,self).__init__(size,"input","linear");

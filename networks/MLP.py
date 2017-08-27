@@ -50,11 +50,17 @@ class MLPRegressor:
             y[i,:] = np.asarray(li_y[i]);
         self.solver.optimize(self.layers,x,y);    
     def predict(self,x):
-        # input,x: a list of list of features (n_sample * n_featres)
-        # output, predict: a np matrix (n_sample * n_result)
-        for layer in self.layers:
-            if layer.typ is "input":
-                continue;
-            temp_out = layer.eval(x);
-        predict = temp_out;
+        # input,x: a list of list of features (n_sample * n_features)
+        # output, predict: a 2d np array (n_sample * n_result)
+        # mid,x: np matrix n_sample * n_features
+        x = np.asmatrix(x);
+        n_sample = x.shape[0];
+        n_result = self.layers[-1].size;
+        predict = np.zeros((n_sample,n_result));
+        for i in range(0,n_sample):
+            temp_out = x[i,:].T;
+            for layer in self.layers:
+                temp_out = layer.eval(temp_out);
+            predict[i,:] = temp_out;
+
         return predict;

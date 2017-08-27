@@ -6,12 +6,8 @@ class Optimizer:
         # mid,x: x.T -> n_features *1
         # output,layers_result: list of np array n_unit * 1
         layers_result = [];
+        temp_out = x.T;
         for layer in layers:
-            if layer.typ is "input":
-                # tranpose the input in the input layer
-                temp_out = x.T;
-                layers_result.append(temp_out);
-                continue;
             layers_result.append( layer.eval(temp_out) );            
         return layers_result;
     def _update_layers(self,layers,dw,db):
@@ -25,8 +21,8 @@ class Optimizer:
             norm_w += np.linalg.norm(dw[i-1]);
             norm_b += np.linalg.norm(db[i-1]);
             # print(norm_w);
-            layers[i].weight += self.alpha * dw[i-1];
-            layers[i].bias   += self.alpha * db[i-1];
+            layers[i].weight -= self.alpha * dw[i-1];
+            layers[i].bias   -= self.alpha * db[i-1];
         if (norm_w < self.eps and norm_b < self.eps):
             stop_flag = True;
         return stop_flag;
@@ -53,7 +49,7 @@ class Optimizer:
         # skip input layer
         for i in range(1,nlayers):
             db[i-1] = gradients[i-1];
-            dw[i-1] = db[i-1] * layers_result[i].T;
+            dw[i-1] = db[i-1] * layers_result[i-1].T;
         return dw,db;
     def __init__(self,cost_func, alpha, eps):
         # record every cost in each iteration
